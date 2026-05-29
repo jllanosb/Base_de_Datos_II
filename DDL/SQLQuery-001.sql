@@ -29,14 +29,14 @@ Create Table Usuario (
 
 --Restricciones
 /*
-Primary Key
+Primary Key /
 Foregin Key
 Unique
-Check
-Default
-Null
-Not null
-identity
+Check 
+Default /
+Null /
+Not null /
+identity /
 */
 
 -- Crear Tabla Clientes
@@ -51,4 +51,31 @@ CREATE TABLE Cliente (
 	Zip varchar(5),
 	FechaNac date
 )
+--Todos los campos asumen valor null
 
+Create Table Producto(
+	idproducto int primary key,
+	nombreproducto varchar (50),
+	categoriaproducto varchar(50),
+	precio money,
+	marca varchar(30)
+)
+--Campo PK asume restriccion PK, not null
+-- Los demas automaticamente null.
+
+Create table Categoria (
+	idcategoria int primary key identity(1,1),
+	nombrecategoria varchar(40) not null
+)
+--Categoria no admite valores nulos
+--idcategoria va cambiando de 1 en 1 automaticamente
+
+Create table EstadoProducto(
+	idestado int primary key,
+	idproducto int not null,
+	Estado varchar(8) default 'Activo' not null
+	--Restriccion Foreign key
+	Constraint FK_Producto
+	foreign key (idproducto) references 
+	Producto (idproducto)
+)
