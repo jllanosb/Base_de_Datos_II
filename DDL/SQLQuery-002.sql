@@ -181,3 +181,68 @@ CREATE TABLE jllb.direccion (
 );
 print 'Tabla Direccion Creada';
 go
+
+--Crear tabla Tipo documento
+if OBJECT_ID('jllb.tipo_documento', 'U') is not null
+begin
+	Drop table jllb.tipo_documento;
+	print 'Tabla Tipo Documento eliminada';
+end
+go
+
+CREATE TABle jllb.tipo_documento(
+	id_tipo_documento int identity(1,1) primary key,
+	nombredoc varchar(50) not null UNIQUE,
+	abreviatura char(10) not null UNIQUE
+);
+print 'Tabla Tipo Documento Creado';
+go
+
+--Crear tabla Cliente
+if OBJECT_ID('jllb.cliente', 'U') is not null
+begin
+	Drop Table jllb.cliente;
+	print 'Tabla Cliente Eliminada';
+end
+go
+CREATE TABLE jllb.cliente (
+	id_cliente int identity(1,1) primary key,
+	nombres varchar(100) not null,
+	apaterno varchar(100) not null,
+	amaterno varchar(100) not null,
+	id_tipo_documento int not null,--Tipo_documento
+	numero_documento varchar(20) not null,
+	telefono varchar(15),
+	email varchar(100) not null unique,
+	fecha_nacimiento date,
+	id_nacionalidad int not null, --Nacionalidad
+	fecha_registro DATETIME DEFAULT GETDATE(),
+	estado varchar(10) DEFAULT 'Activo' CHECK (estado in ('Activo','Inactivo')),
+	constraint unique_documento UNIQUE(id_tipo_documento, numero_documento),
+	foreign key (id_tipo_documento) References jllb.tipo_documento(id_tipo_documento),
+	foreign key (id_nacionalidad) References jllb.nacionalidad (id_nacionalidad)
+);
+print 'Tabla Cliente Creada';
+go
+--Crear tabla direccion_cliente
+--Crear tabla cargo
+--Crear tabla empleado
+--Crear tabla direccion_empleado
+--Crear tabla categoria_proveedor
+--Crear tabla proveedor
+--Crear tabla direccion_proveedor
+--Crear tabla tipo_habitacion
+--Crear tabla habitacion
+--Crear tabla lugar_turistico
+--Crear tabla tipo_transporte
+--Crear tabla vehiculo
+--Crear tabla tipo_paquete
+--Crear tabla paquete
+--Crear tabla medio_pago
+--Crear tabla estado_reserva
+--Crear tabla reserva
+--Crear tabla pago
+--Crear tabla paquete_lugar
+--Crear tabla paquete_hospedaje
+--Crear tabla reserva_habitacion
+--Crear tabla reserva_transporte
