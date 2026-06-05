@@ -122,4 +122,39 @@ Foreign key (id_pais) References jllb.pais(id_pais)
 print 'FK id_pais enlazado a region';
 go
 
+-- Crear tabla Subregion (provincias)
+if OBJECT_ID('jllb.subregion', 'U') is not null
+begin
+    Drop table jllb.subregion;
+    print 'Tabla Subregion eliminada';
+end
+go
+CREATE TABLE jllb.subregion (
+    id_subregion int identity (1,1) primary key,
+    nombresubregion nvarchar(100) not null,
+    codigo_ubigeo char(4) not null UNIQUE,
+    id_region int not null
+    constraint FK_regionsubregion
+    Foreign key (id_subregion) References jllb.region(id_region)
+);
+print 'Tabla Subregion creada correctamente';
+go
 
+--Create table ciudad o distritos
+if OBJECT_ID('jllb.ciudad', 'U') is not null
+begin
+	drop table jllb.ciudad;
+	print 'Tabla Ciudad eliminada';
+end
+go
+
+CREATE TABLE jllb.ciudad (
+	id_ciudad int identity(1,1) primary key,
+	nombreciudad nvarchar(100) not null,
+	codigo_ubigeo char(4) not null UNIQUE,
+	id_subregion int not null
+	constraint FK_subregionciudad
+	Foreign key (id_subregion) References jllb.subregion (id_subregion)
+);
+print 'Tabla ciudad Creada correctamente';
+go
