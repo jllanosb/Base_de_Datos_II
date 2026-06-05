@@ -1,0 +1,31 @@
+-- ### Lenguaje de Manipulacion de Datos ###
+
+--Insertar Datos a la  Tabla Pais
+--Insertar Datos a la  Tabla Departamento (Region)
+--Insertar Datos a la  tabla Subregion (provincias)
+--Insertar Datos a la  table ciudad o distrito
+--Insertar Datos a la  tabla direccion
+--Insertar Datos a la  tabla Tipo documento
+--Insertar Datos a la  tabla Cliente
+--Insertar Datos a la  tabla direccion_cliente
+--Insertar Datos a la  tabla cargo
+--Insertar Datos a la  tabla empleado
+--Insertar Datos a la  tabla direccion_empleado
+--Insertar Datos a la  tabla categoria_proveedor
+--Insertar Datos a la  tabla proveedor
+--Insertar Datos a la  tabla direccion_proveedor
+--Insertar Datos a la  tabla tipo_habitacion
+--Insertar Datos a la  tabla habitacion
+--Insertar Datos a la  tabla lugar_turistico
+--Insertar Datos a la  tabla tipo_transporte
+--Insertar Datos a la  tabla vehiculo
+--Insertar Datos a la  tabla tipo_paquete
+--Insertar Datos a la  tabla paquete
+--Insertar Datos a la  tabla medio_pago
+--Insertar Datos a la  tabla estado_reserva
+--Insertar Datos a la  tabla reserva
+--Insertar Datos a la  tabla pago
+--Insertar Datos a la  tabla paquete_lugar
+--Insertar Datos a la  tabla paquete_hospedaje
+--Insertar Datos a la  tabla reserva_habitacion
+--Insertar Datos a la  tabla reserva_transporte
