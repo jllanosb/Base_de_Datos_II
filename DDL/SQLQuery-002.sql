@@ -1,9 +1,19 @@
 --Estructura Base de Datos
+use master
+--1. Validar existencia base de datos
+if DB_ID ('TURISMOPERU_JLLB') is not null
+	drop database TURISMOPERU_JLLB
+	print 'La base de datos TURISMOPERU_JLLB Eliminada'
+go
+
+-- 2. Crear la base de datoa
 CREATE DATABASE TURISMOPERU_JLLB
+print 'Base de datos TURISMOPERU_JLLB creada correctamente'
+go
 
---Usar la Base de datos TURISMOPERU_JLLB
-
-
+--3. Usar la Base de datos TURISMOPERU_JLLB
+use TURISMOPERU_JLLB;
+go
 --Schema de Tablas
 
 CREATE SCHEMA JLLB
