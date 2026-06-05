@@ -13,17 +13,18 @@ go
 
 --3. Usar la Base de datos TURISMOPERU_JLLB
 use TURISMOPERU_JLLB;
+print 'Base de Datos TURISMOPERU_JLLB Seleccionada'
 go
---Schema de Tablas
 
+--4. Crear Esquema de Tablas
 CREATE SCHEMA JLLB
+print 'Se creó el Esquema JLLB'
+go
 
---Estructura de la Tablas
--- Create Table JLLB.Table (
---
--- );
-
---TABLAS
+--5. Crear Estructura de la Tablas
+-- Verificar existencia tabla
+-- Create Table JLLB.Table
+-- Identificando TABLAS
 /*
 USUARIO
 PERSONAL
