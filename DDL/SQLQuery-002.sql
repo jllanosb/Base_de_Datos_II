@@ -158,3 +158,26 @@ CREATE TABLE jllb.ciudad (
 );
 print 'Tabla ciudad Creada correctamente';
 go
+
+--Crea tabla direccion
+IF OBJECT_ID('jllb.direccion', 'U') is not null
+begin
+	drop table jllb.direccion;
+	print 'Tabla Direccion Eliminada';
+end
+go
+
+CREATE TABLE jllb.direccion (
+	id_direccion int primary key identity(1,1),
+	id_ciudad int not null,
+	calle nvarchar(200), --e.g. Av. Atahualpa
+	numero nvarchar(10), --e.g. 1050
+	referencia TEXT, --e.g. Frente Capac Ñan
+	codigo_postal VARCHAR(10)
+	--Restriccion check
+	constraint chk_zip check (len(codigo_postal) between 5 and 10) --e.g. 06001,
+	constraint FK_direccionciudad
+	foreign key (id_ciudad) references jllb.ciudad(id_ciudad)
+);
+print 'Tabla Direccion Creada';
+go
