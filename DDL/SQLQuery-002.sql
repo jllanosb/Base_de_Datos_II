@@ -60,10 +60,66 @@ begin
 end
 go
 
-CREATE TABLE JLLB.PAIS (
+CREATE TABLE jllb.pais (
 	id_pais int identity(1,1) primary key,
 	nombrepais nvarchar(100) not null UNIQUE,
-	codigo_iso char(3) not null UNIQUE --e.g PER, USA, ESP, COL 
+	codigo_iso char(3) not null UNIQUE--e.g PER, USA, ESP, COL 
 );
 print 'Tabla Pais Creada Correctamente';
 GO
+
+if OBJECT_ID('jllb.nacionalidad', 'U') is not null
+begin
+	Drop Table jllb.nacionalidad;
+	print 'Tabla Nacionalidad eliminada correctamente';
+end
+go
+
+CREATE TABLE jllb.nacionalidad (
+	id_nacionalidad int primary key,
+	nombrenacionalidad nvarchar(100) not null UNIQUE,
+	--Foreign Key
+	id_pais int null --Solo si aplica a pais reconocido
+	constraint FK_paisnacionalidad
+	Foreign key (id_pais) References jllb.pais(id_pais)
+);
+print 'Tabla Nacionalidad Creada';
+go
+
+--Crea Tabla Departamento (Region)
+if OBJECT_ID('jllb.region', 'u') is not null
+begin 
+	drop table jllb.region;
+	print 'Tabla Region eliminada ';
+end
+go
+CREATE TABLE jllb.region (
+	id_region int,
+	nombreregion nvarchar(100) not null,
+	codigo_ubigeo char(3) not null UNIQUE, --CAJ, LIM, CUS
+	id_pais int not null
+);
+print 'Tabla Region Creada';
+go
+
+--Modificar la Tabla Region (Agregar id not null)
+ALTER TABLE jllb.region
+ALTER COLUMN id_region int not null
+print 'id_region actualizado como not null';
+go
+
+--Agregar PK a la tabla Region
+ALTER TABLE jllb.region
+ADD CONSTRAINT PK_idregion
+PRIMARY KEY (id_region)
+print 'PK id_region asignado';
+go
+
+--Agregar FK id_pais a tabla Region
+ALTER TABLE jllb.region
+add constraint FK_paisregion
+Foreign key (id_pais) References jllb.pais(id_pais)
+print 'FK id_pais enlazado a region';
+go
+
+
