@@ -107,12 +107,71 @@ Select * from jllb.cliente
 
 --Insertar Datos a la  tabla direccion_cliente
 --Insertar Datos a la  tabla cargo
+INSERT INTO JLLB.cargo
+Select 
+	nombre,
+	descripcion,
+	salario_base
+From TurismoPeru.dbo.cargo
+
+Select * from jllb.cargo
+
 --Insertar Datos a la  tabla empleado
+INSERT INTO JLLB.empleado
+Select 
+	nombres,
+	apaterno,
+	amaterno,
+	id_tipo_documento,
+	numero_documento,
+	telefono,
+	email,
+	id_cargo,
+	fecha_contratacion,
+	salario, 
+	id_nacionalidad,
+	estado
+From TurismoPeru.dbo.empleado
+
+Select * from jllb.empleado
+
 --Insertar Datos a la  tabla direccion_empleado
 --Insertar Datos a la  tabla categoria_proveedor
+INSERT INTO JLLB.categoria_proveedor
+Select 
+ nombrecategoriaproveedor,
+ descripcion
+From TurismoPeru.dbo.categoria_proveedor
+
+Select * from jllb.categoria_proveedor
 --Insertar Datos a la  tabla proveedor
+INSERT INTO JLLB.proveedor
+Select 
+	nombre_comercial, 
+	razon_social,
+	ruc,
+	id_categoria,
+	telefono, email,
+	id_nacionalidad,
+	contacto_principal,
+	calificacion,
+	estado,
+	fecha_registro
+From TurismoPeru.dbo.proveedor
+
+Select * from jllb.proveedor
+
 --Insertar Datos a la  tabla direccion_proveedor
+
 --Insertar Datos a la  tabla tipo_habitacion
+INSERT INTO JLLB.tipo_habitacion
+Select 
+	nombrehabitacion,
+	capacidad_personas,
+	descripcion
+From TurismoPeru.dbo.tipo_habitacion
+
+Select * from jllb.tipo_habitacion
 --Insertar Datos a la  tabla habitacion
 --Insertar Datos a la  tabla lugar_turistico
 --Insertar Datos a la  tabla tipo_transporte
