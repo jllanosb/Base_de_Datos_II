@@ -51,19 +51,60 @@ SELECT *
 FROM TURISMOPERU_JLLB.JLLB.REGION --DE DONDE EXTRAIGO
 Select * from jllb.subregion
 --Insertar Datos a la  table ciudad o distrito
-INSERT INTO JLLB.subregion
-Select nombresubregion,codigo_ubigeo,id_region
-From TurismoPeru.dbo.subregion
+INSERT INTO JLLB.ciudad
+Select nombreciudad, codigo_ubigeo, id_subregion
+From TurismoPeru.dbo.ciudad
 
-INSERT INTO TURISMOPERU_JCAA.JCAA.REGION --BASE USTEDES
-SELECT * 
-FROM TURISMOPERU_JLLB.JLLB.REGION --DE DONDE EXTRAIGO
-Select * from jllb.subregion
+INSERT INTO TURISMOPERU_JCAA.JCAA.ciudad --BASE USTEDES
+SELECT * --corregir
+FROM TURISMOPERU_JLLB.JLLB.ciudad --DE DONDE EXTRAIGO
+Select * from jllb.ciudad
 
+INSERT INTO JLLB.ciudad
+Select *
+From TurismoPeru.dbo.direccion
 
+INSERT INTO TURISMOPERU_JCAA.JCAA.ciudad --BASE USTEDES
+SELECT * --corregir
+FROM TURISMOPERU_JLLB.JLLB.ciudad --DE DONDE EXTRAIGO
+Select * from jllb.ciudad
+
+--insertar Datos a la tabla Nacionalidades
+INSERT INTO JLLB.nacionalidad
+Select *
+From TurismoPeru.dbo.nacionalidad
+
+Select * from jllb.nacionalidad
 --Insertar Datos a la  tabla direccion
+
+
 --Insertar Datos a la  tabla Tipo documento
+INSERT INTO JLLB.tipo_documento
+Select
+	nombre as nombredoc,
+	abreviatura
+From TurismoPeru.dbo.tipo_documento
+
+Select * from jllb.tipo_documento
+
 --Insertar Datos a la  tabla Cliente
+INSERT INTO JLLB.cliente
+Select 
+	nombres,
+	apaterno,
+	amaterno,
+	id_tipo_documento,
+	numero_documento,
+	telefono,
+	email,
+	fecha_nacimiento,
+	id_nacionalidad,
+	fecha_registro,
+	estado
+From TurismoPeru.dbo.cliente
+
+Select * from jllb.cliente
+
 --Insertar Datos a la  tabla direccion_cliente
 --Insertar Datos a la  tabla cargo
 --Insertar Datos a la  tabla empleado
