@@ -276,7 +276,7 @@ CREATE TABLE jllb.direccion_empleado (
 	foreign key (id_empleado) references jllb.empleado (id_empleado),
 	foreign key (id_direccion) references jllb.direccion (id_direccion)
 );
-print 'Tabla Empleado_Cliente Creada';
+print 'Tabla Direccion Empleado Creada';
 GO
 
 -- Categorías de Proveedor
@@ -334,7 +334,7 @@ CREATE TABLE direccion_proveedor (
 	foreign key (id_proveedor) references jllb.proveedor (id_proveedor),
 	foreign key (id_direccion) references jllb.direccion (id_direccion)
 );
-print 'Tabla Proveedor Creada';
+print 'Tabla Direccion Proveedor Creada';
 GO
 
 -- Tipos de Habitación
