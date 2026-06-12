@@ -18,7 +18,7 @@ INSERT INTO JLLB.PAIS values ('Argentina', 'ARG')
 
 --Limpiar registros Tabla jllb.Pais sin alterar la estructura
 --truncate table jllb.pais
-delete from jllb.pais
+delete from jllb.region
 DBCC CHECKIDENT ('jllb.pais', RESEED, 0);
 
 --Cargar Todos los Paises
@@ -30,17 +30,37 @@ INSERT INTO TURISMOPERU_JCAA.JCAA.PAIS
 SELECT nombrepais, codigo_iso
 FROM TURISMOPERU_JLLB.JLLB.pais
 
-select * from TURISMOPERU_LAHM.LAHM.PAIS
-delete from TURISMOPERU_LAHM.LAHM.PAIS
-
 Select * from jllb.pais
 --Insertar Datos a la  Tabla Departamento (Region)
 INSERT INTO JLLB.region
-Select nombrepais, codigo_iso
-From TurismoPeru.dbo.pais
+Select *
+From TurismoPeru.dbo.region
+
+INSERT INTO TURISMOPERU_JCAA.JCAA.REGION --BASE USTEDES
+SELECT * 
+FROM TURISMOPERU_JLLB.JLLB.REGION --DE DONDE EXTRAIGO
+Select * from jllb.REGION
 
 --Insertar Datos a la  tabla Subregion (provincias)
+INSERT INTO JLLB.subregion
+Select nombresubregion,codigo_ubigeo,id_region
+From TurismoPeru.dbo.subregion
+
+INSERT INTO TURISMOPERU_JCAA.JCAA.REGION --BASE USTEDES
+SELECT * 
+FROM TURISMOPERU_JLLB.JLLB.REGION --DE DONDE EXTRAIGO
+Select * from jllb.subregion
 --Insertar Datos a la  table ciudad o distrito
+INSERT INTO JLLB.subregion
+Select nombresubregion,codigo_ubigeo,id_region
+From TurismoPeru.dbo.subregion
+
+INSERT INTO TURISMOPERU_JCAA.JCAA.REGION --BASE USTEDES
+SELECT * 
+FROM TURISMOPERU_JLLB.JLLB.REGION --DE DONDE EXTRAIGO
+Select * from jllb.subregion
+
+
 --Insertar Datos a la  tabla direccion
 --Insertar Datos a la  tabla Tipo documento
 --Insertar Datos a la  tabla Cliente

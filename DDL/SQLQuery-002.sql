@@ -19,7 +19,7 @@ go
 --4. Crear Esquema de Tablas
 CREATE SCHEMA JLLB;
 GO
-print 'Se cre� el Esquema JLLB';
+print 'Se creo el Esquema JLLB';
 go
 
 --5. Crear Estructura de la Tablas
@@ -110,7 +110,7 @@ CREATE TABLE jllb.subregion (
     codigo_ubigeo char(4) not null UNIQUE,
     id_region int not null
     constraint FK_regionsubregion
-    Foreign key (id_subregion) References jllb.region(id_region)
+    Foreign key (id_region) References jllb.region(id_region)
 );
 print 'Tabla Subregion creada correctamente';
 go
