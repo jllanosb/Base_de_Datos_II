@@ -326,7 +326,7 @@ BEGIN
     PRINT 'Tabla direccion_proveedor eliminada.';
 END
 GO
-CREATE TABLE direccion_proveedor (
+CREATE TABLE jllb.direccion_proveedor (
 	id_proveedor int not null,
 	id_direccion int not null
     constraint PK_proveedor_direccion
@@ -559,7 +559,7 @@ BEGIN
     PRINT 'Tabla pago eliminada.';
 END
 GO
-CREATE TABLE pago (
+CREATE TABLE jllb.pago (
     id_pago INT IDENTITY(1,1) PRIMARY KEY,
     id_reserva INT NOT NULL,
     id_medio_pago INT NOT NULL,

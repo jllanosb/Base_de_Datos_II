@@ -1,6 +1,14 @@
 -- ### Lenguaje de Manipulacion de Datos ###
-
+/*
+1ra INSERT INTO TABLA (CAMPOS) VALUES (CAMPOS A INSERTAR)
+2ra INSERT INTO TABLA VALUES (CAMPOS A INSERTAR)
+3ra INSERT INTO TABLA
+SELECT * FROM 
+RESPALDO.TABLA
+*/
+USE TURISMOPERU_JLLB
 --Insertar Datos a la  Tabla Pais
+INSERT INTO JLLB.PAIS ()
 --Insertar Datos a la  Tabla Departamento (Region)
 --Insertar Datos a la  tabla Subregion (provincias)
 --Insertar Datos a la  table ciudad o distrito
