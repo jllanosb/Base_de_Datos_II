@@ -136,6 +136,8 @@ From TurismoPeru.dbo.empleado
 Select * from jllb.empleado
 
 --Insertar Datos a la  tabla direccion_empleado
+
+
 --Insertar Datos a la  tabla categoria_proveedor
 INSERT INTO JLLB.categoria_proveedor
 Select 
@@ -173,16 +175,154 @@ From TurismoPeru.dbo.tipo_habitacion
 
 Select * from jllb.tipo_habitacion
 --Insertar Datos a la  tabla habitacion
+INSERT INTO JLLB.habitacion
+Select
+	id_proveedor,
+	numero_habitacion,
+	id_tipo_habitacion,
+	precio_noche,
+	estado,
+	descripcion
+From TurismoPeru.dbo.habitacion
+
+Select * from jllb.habitacion
+
+-- Insertar Datos tabla direccion 
+INSERT INTO JLLB.direccion
+Select
+	id_ciudad,
+	calle,
+	numero,
+	referencia,
+	codigo_postal
+From TurismoPeru.dbo.direccion
+
+Select * from jllb.direccion
+
 --Insertar Datos a la  tabla lugar_turistico
+INSERT INTO JLLB.lugar_turistico
+Select
+	nombre,
+	descripcion,
+	id_direccion,
+	latitud,
+	longitud,
+	precio_entrada,
+	horario_apertura,
+	horario_cierre,
+	calificacion,
+	estado
+From TurismoPeru.dbo.lugar_turistico
+
+Select * from jllb.lugar_turistico
+
 --Insertar Datos a la  tabla tipo_transporte
+
+INSERT INTO JLLB.tipo_transporte
+Select
+	nombre,
+	descripcion
+From TurismoPeru.dbo.tipo_transporte
+
+Select * from jllb.tipo_transporte
 --Insertar Datos a la  tabla vehiculo
+INSERT INTO JLLB.vehiculo
+Select
+	id_proveedor,
+	placa,
+	id_tipo_transporte,
+	marca,
+	modelo,
+	capacidad_pasajeros,
+	año_fabricacion,
+	precio_por_km,
+	precio_por_hora,
+	estado
+From TurismoPeru.dbo.vehiculo
+
+Select * from jllb.vehiculo
 --Insertar Datos a la  tabla tipo_paquete
+INSERT INTO JLLB.tipo_paquete
+Select
+	nombre,
+	descripcion
+From TurismoPeru.dbo.tipo_paquete
+
+Select * from jllb.tipo_paquete
 --Insertar Datos a la  tabla paquete
+INSERT INTO JLLB.paquete
+Select
+	nombre,
+	descripcion,
+	id_tipo_paquete,
+	duracion_dias,
+	duracion_noches,
+	precio_base,
+	precio_por_persona_adicional,
+	capacidad_minima,
+	capacidad_maxima,
+	incluye_hospedaje,
+	incluye_transporte,
+	incluye_alimentacion,
+	incluye_guia,
+	estado,
+	fecha_creacion
+From TurismoPeru.dbo.paquete
+
+Select * from jllb.paquete
+
 --Insertar Datos a la  tabla medio_pago
+INSERT INTO JLLB.medio_pago
+Select
+	nombre,
+	tipo,
+	comision_porcentaje,
+	estado
+From TurismoPeru.dbo.medio_pago
+
+Select * from jllb.medio_pago
 --Insertar Datos a la  tabla estado_reserva
+INSERT INTO JLLB.estado_reserva
+Select
+	nombre,
+	descripcion
+From TurismoPeru.dbo.estado_reserva
+
+Select * from jllb.estado_reserva
 --Insertar Datos a la  tabla reserva
+INSERT INTO JLLB.reserva
+Select
+	codigo_reserva,
+	id_cliente,
+	id_paquete,
+	id_empleado,
+	fecha_reserva,
+	fecha_inicio,
+	fecha_fin,
+	numero_personas,
+	precio_total,
+	adelanto,
+	saldo_pendiente,
+	id_estado_reserva,
+	observaciones
+From TurismoPeru.dbo.reserva
+
+Select * from jllb.reserva
 --Insertar Datos a la  tabla pago
+INSERT INTO JLLB.pago
+Select
+	id_reserva,
+	id_medio_pago,
+	monto,
+	fecha_pago,
+	numero_operacion,
+	comprobante,
+	estado
+From TurismoPeru.dbo.pago
+
+Select * from jllb.pago
 --Insertar Datos a la  tabla paquete_lugar
+
 --Insertar Datos a la  tabla paquete_hospedaje
 --Insertar Datos a la  tabla reserva_habitacion
 --Insertar Datos a la  tabla reserva_transporte
