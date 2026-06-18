@@ -145,10 +145,10 @@ go
 CREATE TABLE jllb.direccion (
 	id_direccion int primary key identity(1,1),
 	id_ciudad int not null,
-	calle nvarchar(200), --e.g. Av. Atahualpa
-	numero nvarchar(10), --e.g. 1050
-	referencia TEXT, --e.g. Frente Capac Ñan
-	codigo_postal VARCHAR(10)
+	calle nvarchar(150), --e.g. Av. Atahualpa
+	numero nvarchar(20), --e.g. 1050
+	referencia varchar(200), --e.g. Frente Capac Ñan
+	codigo_postal VARCHAR(15)
 	--Restriccion check
 	constraint chk_zip check (len(codigo_postal) between 5 and 10) --e.g. 06001,
 	constraint FK_direccionciudad
@@ -173,6 +173,71 @@ CREATE TABle jllb.tipo_documento(
 print 'Tabla Tipo Documento Creado';
 go
 
+if OBJECT_ID('jllb.persona', 'U') is not null
+begin
+	Drop Table jllb.persona;
+	print 'Tabla Persona Eliminada';
+end
+go
+-- Crear Tabla Persona
+CREATE TABLE jllb.persona(
+    id_persona INT IDENTITY(1,1) PRIMARY KEY,
+    tipo_persona CHAR(1) NOT NULL
+    CHECK(tipo_persona IN ('N','J')), -- N=Natural J=Jurídica
+
+    nombres VARCHAR(100),
+    apaterno VARCHAR(100),
+    amaterno VARCHAR(100),
+
+    razon_social VARCHAR(150) not null,
+    nombre_comercial VARCHAR(150) ,
+
+    id_tipo_documento INT NOT NULL,
+    numero_documento VARCHAR(20) NOT NULL,
+    telefono VARCHAR(15),
+    email VARCHAR(100),
+    id_nacionalidad INT NOT NULL,
+    estado VARCHAR(20) DEFAULT 'Activo' CHECK (estado IN ('Activo', 'Inactivo')),
+    fecha_registro DATETIME DEFAULT GETDATE(),
+
+    CONSTRAINT uq_persona_documento
+    UNIQUE(id_tipo_documento,numero_documento),
+
+    FOREIGN KEY(id_tipo_documento)
+    REFERENCES jllb.tipo_documento(id_tipo_documento),
+
+    FOREIGN KEY(id_nacionalidad)
+    REFERENCES jllb.nacionalidad(id_nacionalidad)
+);
+print 'Tabla Persona Creada';
+go
+
+--Crear Tabla Direccion
+IF OBJECT_ID('jllb.direccion', 'U') IS NOT NULL
+BEGIN
+    DROP TABLE jllb.direccion;
+    PRINT 'Tabla direccion eliminada.';
+END
+GO
+
+CREATE TABLE jllb.direccion (
+    id_direccion int primary key identity(1,1),
+	id_ciudad int not null,
+	calle nvarchar(200), --e.g. Av. Atahualpa
+	numero nvarchar(20), --e.g. 1050
+	referencia TEXT, --e.g. Frente Capac Ñan
+	codigo_postal VARCHAR(10)
+	--Restriccion check
+	constraint chk_zip check (len(codigo_postal) between 5 and 10), --e.g. 06001
+	latitud DECIMAL(10,8),
+    longitud DECIMAL(11,8),
+    altitud DECIMAL(8,2),
+    constraint FK_direccionciudad
+	foreign key (id_ciudad) references jllb.ciudad(id_ciudad)
+);
+print 'Tabla Direccion Creada';
+GO
+
 --Crear tabla Cliente
 if OBJECT_ID('jllb.cliente', 'U') is not null
 begin
@@ -180,42 +245,36 @@ begin
 	print 'Tabla Cliente Eliminada';
 end
 go
-CREATE TABLE jllb.cliente (
-	id_cliente int identity(1,1) primary key,
-	nombres varchar(100) not null,
-	apaterno varchar(100) not null,
-	amaterno varchar(100) not null,
-	id_tipo_documento int not null,--Tipo_documento
-	numero_documento varchar(20) not null,
-	telefono varchar(15),
-	email varchar(100) not null unique,
-	fecha_nacimiento date,
-	id_nacionalidad int not null, --Nacionalidad
-	fecha_registro DATETIME DEFAULT GETDATE(),
-	estado varchar(10) DEFAULT 'Activo' CHECK (estado in ('Activo','Inactivo')),
-	constraint unique_documento UNIQUE(id_tipo_documento, numero_documento),
-	foreign key (id_tipo_documento) References jllb.tipo_documento(id_tipo_documento),
-	foreign key (id_nacionalidad) References jllb.nacionalidad (id_nacionalidad)
+CREATE TABLE jllb.cliente(
+    id_persona INT PRIMARY KEY,
+    fecha_nacimiento DATE,
+    FOREIGN KEY(id_persona)
+    REFERENCES jllb.persona(id_persona)
 );
 print 'Tabla Cliente Creada';
 go
 
-IF OBJECT_ID('jllb.direccion_cliente', 'U') IS NOT NULL
-BEGIN
-    DROP TABLE jllb.direccion_cliente;
-    PRINT 'Tabla direccion_cliente eliminada.';
-END
-GO
-CREATE TABLE jllb.direccion_cliente (
-	id_cliente int not null,
-	id_direccion int not null
-    constraint PK_Cliente_Direccion
-	primary key (id_cliente, id_direccion)
-	foreign key (id_cliente) references jllb.cliente (id_cliente),
-	foreign key (id_direccion) references jllb.direccion (id_direccion)
+--Crear tabla Direccion_Cliente
+if OBJECT_ID('jllb.direccion_cliente', 'U') is not null
+begin
+	Drop Table jllb.direccion_cliente;
+	print 'Tabla Direccion_cliente Eliminada';
+end
+go
+CREATE TABLE jllb.direccion_cliente(
+    id_persona INT not null,
+    id_direccion int not null,
+    tipo_direccion VARCHAR(20)
+    CHECK(tipo_direccion IN ('Casa','Trabajo','Facturacion','Entrega')),
+    es_principal BIT DEFAULT 0,
+    primary key (id_persona, id_direccion),
+    FOREIGN KEY(id_persona)
+    REFERENCES jllb.cliente(id_persona),
+    FOREIGN KEY(id_direccion)
+    REFERENCES jllb.direccion(id_direccion)
 );
-print 'Tabla Direccion_Cliente Creada';
-GO
+print 'Tabla Direccion Cliente Creada';
+go
 
 -- Cargos
 IF OBJECT_ID('jllb.cargo', 'U') IS NOT NULL
@@ -233,51 +292,47 @@ CREATE TABLE jllb.cargo (
 print 'Tabla Cargo Creada';
 GO
 
--- Empleados
+-- Empleado
 IF OBJECT_ID('jllb.empleado', 'U') IS NOT NULL
 BEGIN
     DROP TABLE jllb.empleado;
     PRINT 'Tabla empleado eliminada.';
 END
 GO
-CREATE TABLE jllb.empleado (
-    id_empleado INT IDENTITY(1,1) PRIMARY KEY,
-    nombres VARCHAR(100) NOT NULL,
-    apaterno VARCHAR(100) NOT NULL,
-	amaterno VARCHAR(100) NOT NULL,
-    id_tipo_documento INT NOT NULL,
-    numero_documento VARCHAR(20) NOT NULL,
-    telefono VARCHAR(15),
-    email VARCHAR(100) UNIQUE,
+CREATE TABLE jllb.empleado(
+    id_persona INT PRIMARY KEY,
     id_cargo INT NOT NULL,
     fecha_contratacion DATE NOT NULL,
     salario DECIMAL(10,2) NOT NULL,
-	id_nacionalidad int not null,
-    estado VARCHAR(20) DEFAULT 'Activo' CHECK (estado IN ('Activo', 'Inactivo', 'Vacaciones')),
-    CONSTRAINT unique_empleado_doc UNIQUE (id_tipo_documento, numero_documento),
-    FOREIGN KEY (id_tipo_documento) REFERENCES jllb.tipo_documento(id_tipo_documento),
-    FOREIGN KEY (id_cargo) REFERENCES jllb.cargo(id_cargo),
-	FOREIGN KEY (id_nacionalidad) REFERENCES jllb.nacionalidad(id_nacionalidad)
+    FOREIGN KEY(id_persona)
+    REFERENCES jllb.persona(id_persona),
+    FOREIGN KEY(id_cargo)
+    REFERENCES jllb.cargo(id_cargo)
 );
 print 'Tabla Empleado Creada';
 GO
 
-IF OBJECT_ID('jllb.direccion_empleado', 'U') IS NOT NULL
-BEGIN
-    DROP TABLE jllb.direccion_empleado;
-    PRINT 'Tabla direccion_empleado eliminada.';
-END
-GO
-CREATE TABLE jllb.direccion_empleado (
-	id_empleado int not null,
-	id_direccion int not null
-    constraint PK_empleado_direccion
-	primary key (id_empleado, id_direccion)
-	foreign key (id_empleado) references jllb.empleado (id_empleado),
-	foreign key (id_direccion) references jllb.direccion (id_direccion)
+--Crear tabla Direccion_Empleado
+if OBJECT_ID('jllb.direccion_empleado', 'U') is not null
+begin
+	Drop Table jllb.direccion_empleado;
+	print 'Tabla direccion_empleado Eliminada';
+end
+go
+CREATE TABLE jllb.direccion_empleado(
+    id_persona INT not null,
+    id_direccion int not null,
+    tipo_direccion VARCHAR(20)
+    CHECK(tipo_direccion IN ('Casa','Trabajo','Facturacion','Entrega')),
+    es_principal BIT DEFAULT 0,
+    primary key (id_persona, id_direccion),
+    FOREIGN KEY(id_persona)
+    REFERENCES jllb.empleado(id_persona),
+    FOREIGN KEY(id_direccion)
+    REFERENCES jllb.direccion(id_direccion)
 );
 print 'Tabla Direccion Empleado Creada';
-GO
+go
 
 -- Categorías de Proveedor
 IF OBJECT_ID('jllb.categoria_proveedor', 'U') IS NOT NULL
@@ -294,48 +349,125 @@ CREATE TABLE jllb.categoria_proveedor (
 print 'Tabla Categoria_Proveedor Creada';
 GO
 
--- Proveedores
+-- Proveedor
 IF OBJECT_ID('jllb.proveedor', 'U') IS NOT NULL
 BEGIN
     DROP TABLE jllb.proveedor;
-    PRINT 'Tabla proveedor eliminada.';
+    PRINT 'Tabla Proveedor eliminada.';
 END
 GO
-CREATE TABLE jllb.proveedor (
-    id_proveedor INT IDENTITY(1,1) PRIMARY KEY,
-    nombre_comercial VARCHAR(150) NOT NULL,
-    razon_social VARCHAR(150) NOT NULL,
-    ruc VARCHAR(11) NOT NULL UNIQUE,
+CREATE TABLE jllb.proveedor(
+    id_persona INT PRIMARY KEY,
     id_categoria INT NOT NULL,
-    telefono VARCHAR(15),
-    email VARCHAR(100) UNIQUE,
-	id_nacionalidad int not null,
     contacto_principal VARCHAR(100),
-    calificacion DECIMAL(3,2) DEFAULT 0.00,
-    estado VARCHAR(20) DEFAULT 'Activo' CHECK (estado IN ('Activo', 'Inactivo', 'Suspendido')),
-    fecha_registro DATETIME DEFAULT GETDATE(),
-    FOREIGN KEY (id_categoria) REFERENCES jllb.categoria_proveedor(id_categoria),
-	FOREIGN KEY (id_nacionalidad) REFERENCES jllb.nacionalidad(id_nacionalidad)
+    calificacion DECIMAL(3,2) DEFAULT 0,
+    FOREIGN KEY(id_persona)
+    REFERENCES jllb.persona(id_persona),
+    FOREIGN KEY(id_categoria)
+    REFERENCES jllb.categoria_proveedor(id_categoria)
 );
 print 'Tabla Proveedor Creada';
 GO
 
-IF OBJECT_ID('jllb.direccion_proveedor', 'U') IS NOT NULL
-BEGIN
-    DROP TABLE jllb.direccion_proveedor;
-    PRINT 'Tabla direccion_proveedor eliminada.';
-END
-GO
-CREATE TABLE jllb.direccion_proveedor (
-	id_proveedor int not null,
-	id_direccion int not null
-    constraint PK_proveedor_direccion
-	primary key (id_proveedor, id_direccion)
-	foreign key (id_proveedor) references jllb.proveedor (id_proveedor),
-	foreign key (id_direccion) references jllb.direccion (id_direccion)
+--Crear tabla Direccion_Proveedor
+if OBJECT_ID('jllb.direccion_proveedor', 'U') is not null
+begin
+	Drop Table jllb.direccion_proveedor;
+	print 'Tabla direccion_proveedor Eliminada';
+end
+go
+CREATE TABLE jllb.direccion_proveedor(
+    id_persona INT not null,
+    id_direccion int not null,
+    tipo_direccion VARCHAR(20) NOT NULL
+    CHECK (tipo_direccion IN ('Fiscal', 'Envio', 'Fisica', 'Correspondencia','Pago')),
+    es_principal BIT DEFAULT 0,
+    primary key (id_persona, id_direccion),
+    FOREIGN KEY(id_persona)
+    REFERENCES jllb.proveedor(id_persona),
+    FOREIGN KEY(id_direccion)
+    REFERENCES jllb.direccion(id_direccion)
 );
 print 'Tabla Direccion Proveedor Creada';
+go
+
+-- Tabla tipos alojamiento
+IF OBJECT_ID('jllb.tipo_alojamiento', 'U') IS NOT NULL
+BEGIN
+    DROP TABLE jllb.tipo_alojamiento;
+    PRINT 'Tabla Tipo_alojamiento eliminada.';
+END
 GO
+CREATE TABLE jllb.tipo_alojamiento (
+    id_tipoalojamiento INT PRIMARY KEY IDENTITY(1,1),
+    Nombre_Tipo VARCHAR(50) NOT NULL UNIQUE, -- 'Hotel', 'Casa de Campo', 'Hostal', 'Cabaña', 'Bed & Breakfast', 'Glamping', 'Apartamento'
+    Descripcion TEXT,
+    Icono_URL VARCHAR(255) -- Para mostrarlo en la web
+);
+print 'Tabla Tipo Alojamiento Creada';
+GO
+
+-- Tabla alojamiento 
+IF OBJECT_ID('jllb.alojamiento', 'U') IS NOT NULL
+BEGIN
+    DROP TABLE jllb.alojamiento;
+    PRINT 'Tabla Alojamiento eliminada.';
+END
+GO
+CREATE TABLE jllb.alojamiento (
+    id_alojamiento INT PRIMARY KEY IDENTITY(1,1),
+    id_tipoalojamiento INT NOT NULL,
+    FOREIGN KEY (id_tipoalojamiento) REFERENCES jllb.tipo_alojamiento(id_tipoalojamiento),
+    
+    Nombre VARCHAR(100) NOT NULL,
+    Telefono VARCHAR(20),
+    Email VARCHAR(100),
+    Categoria_Estrellas TINYINT
+    CHECK (Categoria_Estrellas BETWEEN 1 AND 5), -- Aplica solo a hoteles, pero puede ser NULL para otros
+);
+
+---
+--Crear tabla Direccion_Alojamiento
+if OBJECT_ID('jllb.direccion_alojamiento', 'U') is not null
+begin
+	Drop Table jllb.direccion_alojamiento;
+	print 'Tabla direccion_alojamiento Eliminada';
+end
+go
+CREATE TABLE jllb.direccion_alojamiento(
+    id_alojamiento INT not null,
+    id_direccion int not null,
+    tipo_direccion VARCHAR(20) not null DEFAULT 'Fisica' 
+    CHECK (tipo_direccion IN ('Fisica', 'Referencia', 'Zona', 'Acceso_Principal', 'Acceso_Servicio')),
+    Punto_Referencia TEXT,
+    es_principal BIT DEFAULT 0,
+    primary key (id_alojamiento, id_direccion),
+    FOREIGN KEY(id_alojamiento)
+    REFERENCES jllb.alojamiento(id_alojamiento),
+    FOREIGN KEY(id_direccion)
+    REFERENCES jllb.direccion(id_direccion)
+);
+print 'Tabla Direccion Alojamiento Creada';
+go
+
+--Tabla Proveedor Alojamiento
+if OBJECT_ID('jllb.proveedor_alojamiento', 'U') is not null
+begin
+	Drop Table jllb.proveedor_alojamiento;
+	print 'Tabla proveedor_alojamiento Eliminada';
+end
+go
+CREATE TABLE jllb.proveedor_alojamiento (
+    id_proveedoralojamiento INT PRIMARY KEY IDENTITY(1,1),
+    id_persona INT NOT NULL,
+    id_alojamiento INT NOT NULL,
+    FOREIGN KEY(id_alojamiento)
+    REFERENCES jllb.alojamiento(id_alojamiento),
+    FOREIGN KEY(id_persona)
+    REFERENCES jllb.proveedor(id_persona),
+);
+print 'Tabla proveedor_alojamiento Creada';
+go
 
 -- Tipos de Habitación
 IF OBJECT_ID('jllb.tipo_habitacion', 'U') IS NOT NULL
@@ -362,14 +494,16 @@ END
 GO
 CREATE TABLE jllb.habitacion (
     id_habitacion INT IDENTITY(1,1) PRIMARY KEY,
-    id_proveedor INT NOT NULL,
+    id_persona INT NOT NULL,
+    id_alojamiento INT NOT NULL,
     numero_habitacion VARCHAR(10) NOT NULL,
     id_tipo_habitacion INT NOT NULL,
     precio_noche DECIMAL(10,2) NOT NULL,
     estado VARCHAR(20) DEFAULT 'Disponible' CHECK (estado IN ('Disponible', 'Ocupado', 'Mantenimiento', 'Fuera_servicio')),
     descripcion TEXT,
-    CONSTRAINT unique_habitacion UNIQUE (id_proveedor, numero_habitacion),
-    FOREIGN KEY (id_proveedor) REFERENCES jllb.proveedor(id_proveedor),
+    CONSTRAINT unique_habitacion UNIQUE (id_persona, numero_habitacion, id_alojamiento),
+    FOREIGN KEY (id_persona) REFERENCES jllb.proveedor(id_persona),
+    FOREIGN KEY (id_alojamiento) REFERENCES jllb.alojamiento(id_alojamiento),
     FOREIGN KEY (id_tipo_habitacion) REFERENCES jllb.tipo_habitacion(id_tipo_habitacion)
 );
 print 'Tabla Habitacion Creada';
@@ -386,26 +520,38 @@ CREATE TABLE jllb.lugar_turistico (
     id_lugarturistico INT IDENTITY(1,1) PRIMARY KEY,
     nombre VARCHAR(150) NOT NULL,
     descripcion TEXT,
-    id_direccion INT NOT NULL,
-    latitud DECIMAL(10,8),
-    longitud DECIMAL(11,8),
     precio_entrada DECIMAL(10,2) DEFAULT 0.00,
     horario_apertura TIME,
     horario_cierre TIME,
     calificacion DECIMAL(3,2) DEFAULT 0.00,
-    estado VARCHAR(25) DEFAULT 'Activo' CHECK (estado IN ('Activo', 'Inactivo', 'temporalmente_cerrado')),
-    FOREIGN KEY (id_direccion) REFERENCES jllb.direccion(id_direccion)
+    estado VARCHAR(25) DEFAULT 'Activo' CHECK (estado IN ('Activo', 'Inactivo', 'temporalmente_cerrado'))
 );
 print 'Tabla Lugar Turistico Creada';
 GO
-/*CREATE TABLE direccion_lugar_turistico (
-	id_lugarturistico int not null,
-	id_direccion int not null
-	primary key (id_lugarturistico, id_direccion)
-	foreign key (id_lugarturistico) references lugar_turistico (id_lugarturistico),
-	foreign key (id_direccion) references direccion (id_direccion),
+
+--Crear tabla Direccion_LugarTuristico
+if OBJECT_ID('jllb.direccion_lugarturistico', 'U') is not null
+begin
+	Drop Table jllb.direccion_lugarturistico;
+	print 'Tabla direccion_lugarturistico Eliminada';
+end
+go
+CREATE TABLE jllb.direccion_lugarturistico(
+    id_lugarturistico INT not null,
+    id_direccion int not null,
+    tipo_direccion VARCHAR(20) not null DEFAULT 'Fisica' 
+    CHECK (tipo_direccion IN ('Fisica', 'Referencia', 'Zona', 'Acceso_Principal', 'Acceso_Servicio')),
+    Punto_Referencia TEXT,
+    es_principal BIT DEFAULT 0,
+    primary key (id_lugarturistico, id_direccion),
+    FOREIGN KEY(id_lugarturistico)
+    REFERENCES jllb.lugar_turistico(id_lugarturistico),
+    FOREIGN KEY(id_direccion)
+    REFERENCES jllb.direccion(id_direccion)
 );
-GO*/
+print 'Tabla Direccion Lugar Turistico Creada';
+go
+
 -- Tipos de Transporte
 IF OBJECT_ID('jllb.tipo_transporte', 'U') IS NOT NULL
 BEGIN
@@ -440,7 +586,7 @@ CREATE TABLE jllb.vehiculo (
     precio_por_km DECIMAL(10,2),
     precio_por_hora DECIMAL(10,2),
     estado VARCHAR(20) DEFAULT 'disponible' CHECK (estado IN ('Disponible', 'En_servicio', 'En_mantenimiento', 'Fuera_servicio')),
-    FOREIGN KEY (id_proveedor) REFERENCES jllb.proveedor(id_proveedor),
+    FOREIGN KEY (id_proveedor) REFERENCES jllb.proveedor(id_persona),
     FOREIGN KEY (id_tipo_transporte) REFERENCES jllb.tipo_transporte(id_tipo_transporte)
 );
 print 'Tabla Vehiculo Creada';
@@ -535,6 +681,8 @@ CREATE TABLE jllb.reserva (
     id_cliente INT NOT NULL,
     id_paquete INT NOT NULL,
     id_empleado INT NOT NULL,
+    id_alojamiento INT NOT NULL,
+    id_habitacion INT NOT NULL,
     fecha_reserva DATETIME DEFAULT GETDATE(),
     fecha_inicio DATE NOT NULL,
     fecha_fin DATE NOT NULL,
@@ -544,9 +692,11 @@ CREATE TABLE jllb.reserva (
     saldo_pendiente DECIMAL(10,2) NOT NULL,
     id_estado_reserva INT NOT NULL,
     observaciones VARCHAR(500),
-    FOREIGN KEY (id_cliente) REFERENCES jllb.cliente(id_cliente),
+    FOREIGN KEY (id_cliente) REFERENCES jllb.cliente(id_persona),
     FOREIGN KEY (id_paquete) REFERENCES jllb.paquete(id_paquete),
-    FOREIGN KEY (id_empleado) REFERENCES jllb.empleado(id_empleado),
+    FOREIGN KEY (id_empleado) REFERENCES jllb.empleado(id_persona),
+    FOREIGN KEY (id_alojamiento) REFERENCES jllb.alojamiento(id_alojamiento),
+    FOREIGN KEY (id_habitacion) REFERENCES jllb.habitacion(id_habitacion),
     FOREIGN KEY (id_estado_reserva) REFERENCES jllb.estado_reserva(id_estado_reserva)
 );
 print 'Tabla Reserva Creada';
@@ -607,7 +757,7 @@ CREATE TABLE jllb.paquete_hospedaje (
     precio_noche DECIMAL(10,2) NOT NULL,
     PRIMARY KEY (id_paquete, id_proveedor),
     FOREIGN KEY (id_paquete) REFERENCES jllb.paquete(id_paquete) ON DELETE CASCADE,
-    FOREIGN KEY (id_proveedor) REFERENCES jllb.proveedor(id_proveedor) ON DELETE CASCADE
+    FOREIGN KEY (id_proveedor) REFERENCES jllb.proveedor(id_persona) ON DELETE CASCADE
 );
 print 'Tabla Paquete_Hospedaje Creada';
 GO

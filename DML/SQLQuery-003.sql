@@ -322,7 +322,14 @@ From TurismoPeru.dbo.pago
 
 Select * from jllb.pago
 --Insertar Datos a la  tabla paquete_lugar
+INSERT INTO JLLB.paquete_lugar
+Select
+	id_lugarturistico,
+	orden_visita,
+	tiempo_visita_horas
+From TurismoPeru.dbo.paquete_lugar
 
+Select * from jllb.paquete_lugar
 --Insertar Datos a la  tabla paquete_hospedaje
 --Insertar Datos a la  tabla reserva_habitacion
 --Insertar Datos a la  tabla reserva_transporte
