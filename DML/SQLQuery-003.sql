@@ -26,48 +26,26 @@ INSERT INTO JLLB.PAIS
 Select nombrepais, codigo_iso
 From TurismoPeru.dbo.pais
 
-INSERT INTO TURISMOPERU_JCAA.JCAA.PAIS
-SELECT nombrepais, codigo_iso
-FROM TURISMOPERU_JLLB.JLLB.pais
+INSERT INTO TURISMOPERU_JCAA.JCAA.PAIS -- Consulta que debe realizar el estudiante
+SELECT nombrepais, codigo_iso --campos a cargar por ser identity el id_pais
+FROM TURISMOPERU_JLLB.JLLB.pais --Tabla de otra base de datos
 
 Select * from jllb.pais
+
 --Insertar Datos a la  Tabla Departamento (Region)
 INSERT INTO JLLB.region
 Select *
 From TurismoPeru.dbo.region
-
-INSERT INTO TURISMOPERU_JCAA.JCAA.REGION --BASE USTEDES
-SELECT * 
-FROM TURISMOPERU_JLLB.JLLB.REGION --DE DONDE EXTRAIGO
-Select * from jllb.REGION
 
 --Insertar Datos a la  tabla Subregion (provincias)
 INSERT INTO JLLB.subregion
 Select nombresubregion,codigo_ubigeo,id_region
 From TurismoPeru.dbo.subregion
 
-INSERT INTO TURISMOPERU_JCAA.JCAA.REGION --BASE USTEDES
-SELECT * 
-FROM TURISMOPERU_JLLB.JLLB.REGION --DE DONDE EXTRAIGO
-Select * from jllb.subregion
 --Insertar Datos a la  table ciudad o distrito
 INSERT INTO JLLB.ciudad
 Select nombreciudad, codigo_ubigeo, id_subregion
 From TurismoPeru.dbo.ciudad
-
-INSERT INTO TURISMOPERU_JCAA.JCAA.ciudad --BASE USTEDES
-SELECT * --corregir
-FROM TURISMOPERU_JLLB.JLLB.ciudad --DE DONDE EXTRAIGO
-Select * from jllb.ciudad
-
-INSERT INTO JLLB.ciudad
-Select *
-From TurismoPeru.dbo.direccion
-
-INSERT INTO TURISMOPERU_JCAA.JCAA.ciudad --BASE USTEDES
-SELECT * --corregir
-FROM TURISMOPERU_JLLB.JLLB.ciudad --DE DONDE EXTRAIGO
-Select * from jllb.ciudad
 
 --insertar Datos a la tabla Nacionalidades
 INSERT INTO JLLB.nacionalidad
@@ -76,18 +54,47 @@ From TurismoPeru.dbo.nacionalidad
 
 Select * from jllb.nacionalidad
 --Insertar Datos a la  tabla direccion
+INSERT INTO JLLB.direccion
+Select
+	id_ciudad,
+	calle,
+	numero,
+	referencia,
+	codigo_postal,
+	latitud,
+	longitud,
+	altitud
+From TurismoPeru.dbo.direccion
 
+Select * from jllb.direccion
 
 --Insertar Datos a la  tabla Tipo documento
 INSERT INTO JLLB.tipo_documento
 Select
-	nombre as nombredoc,
+	nombredoc,
 	abreviatura
 From TurismoPeru.dbo.tipo_documento
 
 Select * from jllb.tipo_documento
---Insertar Datos en la Tabla Persona
 
+--Insertar Datos en la Tabla Persona
+INSERT INTO JLLB.persona
+Select 
+	tipo_persona,
+	nombres,
+	apaterno,
+	amaterno,razon_social,
+	nombre_comercial,
+	id_tipo_documento,
+	numero_documento,
+	telefono,
+	email,
+	id_nacionalidad,
+	estado,
+	fecha_registro
+From TurismoPeru.dbo.persona
+
+Select * from jllb.persona
 
 --Insertar Datos a la  tabla Cliente
 INSERT INTO JLLB.cliente
@@ -95,9 +102,8 @@ Select
 	*
 From TurismoPeru.dbo.cliente
 
-Select * from jllb.persona
+Select * from jllb.cliente
 
---Insertar Datos a la  tabla direccion_cliente
 --Insertar Datos a la  tabla cargo
 INSERT INTO JLLB.cargo
 Select 
@@ -111,24 +117,10 @@ Select * from jllb.cargo
 --Insertar Datos a la  tabla empleado
 INSERT INTO JLLB.empleado
 Select 
-	nombres,
-	apaterno,
-	amaterno,
-	id_tipo_documento,
-	numero_documento,
-	telefono,
-	email,
-	id_cargo,
-	fecha_contratacion,
-	salario, 
-	id_nacionalidad,
-	estado
+	*
 From TurismoPeru.dbo.empleado
 
 Select * from jllb.empleado
-
---Insertar Datos a la  tabla direccion_empleado
-
 
 --Insertar Datos a la  tabla categoria_proveedor
 INSERT INTO JLLB.categoria_proveedor
@@ -138,24 +130,14 @@ Select
 From TurismoPeru.dbo.categoria_proveedor
 
 Select * from jllb.categoria_proveedor
+
 --Insertar Datos a la  tabla proveedor
 INSERT INTO JLLB.proveedor
 Select 
-	nombre_comercial, 
-	razon_social,
-	ruc,
-	id_categoria,
-	telefono, email,
-	id_nacionalidad,
-	contacto_principal,
-	calificacion,
-	estado,
-	fecha_registro
+	*
 From TurismoPeru.dbo.proveedor
 
 Select * from jllb.proveedor
-
---Insertar Datos a la  tabla direccion_proveedor
 
 --Insertar Datos a la  tabla tipo_habitacion
 INSERT INTO JLLB.tipo_habitacion
@@ -166,10 +148,33 @@ Select
 From TurismoPeru.dbo.tipo_habitacion
 
 Select * from jllb.tipo_habitacion
+
+--Insertar Datos a la  tabla tipo_alojamiento
+INSERT INTO JLLB.tipo_alojamiento
+Select 
+	Nombre_Tipo,
+	Descripcion,
+	Icono_URL
+From TurismoPeru.dbo.tipo_alojamiento
+
+Select * from jllb.tipo_alojamiento
+
+--Insertar Datos a la  tabla alojamiento
+INSERT INTO JLLB.alojamiento
+Select 
+	id_tipoalojamiento,
+	Nombre,
+	Telefono,
+	Email,
+	Categoria_Estrellas
+From TurismoPeru.dbo.alojamiento
+
+Select * from jllb.alojamiento
 --Insertar Datos a la  tabla habitacion
 INSERT INTO JLLB.habitacion
 Select
-	id_proveedor,
+	id_persona,
+	id_alojamiento,
 	numero_habitacion,
 	id_tipo_habitacion,
 	precio_noche,
@@ -179,26 +184,11 @@ From TurismoPeru.dbo.habitacion
 
 Select * from jllb.habitacion
 
--- Insertar Datos tabla direccion 
-INSERT INTO JLLB.direccion
-Select
-	id_ciudad,
-	calle,
-	numero,
-	referencia,
-	codigo_postal
-From TurismoPeru.dbo.direccion
-
-Select * from jllb.direccion
-
 --Insertar Datos a la  tabla lugar_turistico
 INSERT INTO JLLB.lugar_turistico
 Select
 	nombre,
 	descripcion,
-	id_direccion,
-	latitud,
-	longitud,
 	precio_entrada,
 	horario_apertura,
 	horario_cierre,
@@ -288,6 +278,8 @@ Select
 	id_cliente,
 	id_paquete,
 	id_empleado,
+	id_alojamiento,
+	id_habitacion,
 	fecha_reserva,
 	fecha_inicio,
 	fecha_fin,
@@ -316,12 +308,102 @@ Select * from jllb.pago
 --Insertar Datos a la  tabla paquete_lugar
 INSERT INTO JLLB.paquete_lugar
 Select
-	id_lugarturistico,
-	orden_visita,
-	tiempo_visita_horas
+	*
 From TurismoPeru.dbo.paquete_lugar
 
 Select * from jllb.paquete_lugar
+
 --Insertar Datos a la  tabla paquete_hospedaje
+INSERT INTO JLLB.paquete_hospedaje
+Select
+	*
+From TurismoPeru.dbo.paquete_hospedaje
+
+Select * from jllb.paquete_hospedaje
 --Insertar Datos a la  tabla reserva_habitacion
+INSERT INTO JLLB.reserva_habitacion
+Select
+	*
+From TurismoPeru.dbo.reserva_habitacion
+
+Select * from jllb.reserva_habitacion
+
 --Insertar Datos a la  tabla reserva_transporte
+INSERT INTO JLLB.reserva_transporte
+Select
+	*
+From TurismoPeru.dbo.reserva_transporte
+
+Select * from jllb.reserva_transporte
+
+--Insertar Datos a la  tabla proveedor_alojamiento
+INSERT INTO JLLB.proveedor_alojamiento
+Select
+	id_persona,
+	id_alojamiento
+From TurismoPeru.dbo.proveedor_alojamiento
+
+Select * from jllb.proveedor_alojamiento
+
+--Insertar Datos a la  tabla direccion_alojamiento
+INSERT INTO JLLB.direccion_alojamiento
+Select
+	*
+From TurismoPeru.dbo.direccion_alojamiento
+
+Select * from jllb.direccion_alojamiento
+
+--Insertar Datos a la  tabla direccion_empleado
+INSERT INTO JLLB.direccion_empleado
+Select
+	*
+From TurismoPeru.dbo.direccion_empleado
+
+Select * from jllb.direccion_empleado
+
+--Insertar Datos a la  tabla direccion_cliente
+INSERT INTO JLLB.direccion_cliente
+Select
+	*
+From TurismoPeru.dbo.direccion_cliente
+
+Select * from jllb.direccion_cliente
+
+--Insertar Datos a la  tabla direccion_empleado
+INSERT INTO JLLB.direccion_empleado
+Select distinct
+	*
+From TurismoPeru.dbo.direccion_empleado
+
+Select * from jllb.direccion_empleado
+
+--Insertar Datos a la  tabla direccion_lugarturistico
+INSERT INTO JLLB.direccion_lugarturistico
+Select
+	*
+From TurismoPeru.dbo.direccion_lugarturistico
+
+Select * from jllb.direccion_lugarturistico
+
+--Insertar Datos a la  tabla direccion_proveedor
+INSERT INTO JLLB.direccion_proveedor
+Select
+	*
+From TurismoPeru.dbo.direccion_proveedor
+
+Select * from jllb.direccion_proveedor
+
+
+--Evidencia final
+SELECT 
+    s.name AS Esquema,
+    t.name AS Tabla,
+    dp.name AS Usuario,
+    SUM(p.rows) AS TotalRegistros
+FROM sys.tables t
+INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
+INNER JOIN sys.database_principals dp ON s.principal_id = dp.principal_id
+INNER JOIN sys.partitions p ON t.object_id = p.object_id
+WHERE p.index_id IN (0, 1) -- 0 = Heap, 1 = Clustered Index (asegura contar las filas correctamente)
+GROUP BY s.name, t.name, dp.name
+ORDER BY s.name, t.name;
