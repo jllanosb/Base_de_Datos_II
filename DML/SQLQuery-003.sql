@@ -86,24 +86,16 @@ Select
 From TurismoPeru.dbo.tipo_documento
 
 Select * from jllb.tipo_documento
+--Insertar Datos en la Tabla Persona
+
 
 --Insertar Datos a la  tabla Cliente
 INSERT INTO JLLB.cliente
 Select 
-	nombres,
-	apaterno,
-	amaterno,
-	id_tipo_documento,
-	numero_documento,
-	telefono,
-	email,
-	fecha_nacimiento,
-	id_nacionalidad,
-	fecha_registro,
-	estado
+	*
 From TurismoPeru.dbo.cliente
 
-Select * from jllb.cliente
+Select * from jllb.persona
 
 --Insertar Datos a la  tabla direccion_cliente
 --Insertar Datos a la  tabla cargo

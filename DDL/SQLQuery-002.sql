@@ -134,29 +134,6 @@ CREATE TABLE jllb.ciudad (
 print 'Tabla ciudad Creada correctamente';
 go
 
---Crea tabla direccion
-IF OBJECT_ID('jllb.direccion', 'U') is not null
-begin
-	drop table jllb.direccion;
-	print 'Tabla Direccion Eliminada';
-end
-go
-
-CREATE TABLE jllb.direccion (
-	id_direccion int primary key identity(1,1),
-	id_ciudad int not null,
-	calle nvarchar(150), --e.g. Av. Atahualpa
-	numero nvarchar(20), --e.g. 1050
-	referencia varchar(200), --e.g. Frente Capac Ñan
-	codigo_postal VARCHAR(15)
-	--Restriccion check
-	constraint chk_zip check (len(codigo_postal) between 5 and 10) --e.g. 06001,
-	constraint FK_direccionciudad
-	foreign key (id_ciudad) references jllb.ciudad(id_ciudad)
-);
-print 'Tabla Direccion Creada';
-go
-
 --Crear tabla Tipo documento
 if OBJECT_ID('jllb.tipo_documento', 'U') is not null
 begin
@@ -585,7 +562,7 @@ CREATE TABLE jllb.vehiculo (
     año_fabricacion INT CONSTRAINT CHK_ANIO CHECK (año_fabricacion BETWEEN 1900 and YEAR(GETDATE())),
     precio_por_km DECIMAL(10,2),
     precio_por_hora DECIMAL(10,2),
-    estado VARCHAR(20) DEFAULT 'disponible' CHECK (estado IN ('Disponible', 'En_servicio', 'En_mantenimiento', 'Fuera_servicio')),
+    estado VARCHAR(20) DEFAULT 'Disponible' CHECK (estado IN ('Disponible', 'En_servicio', 'En_mantenimiento', 'Fuera_servicio')),
     FOREIGN KEY (id_proveedor) REFERENCES jllb.proveedor(id_persona),
     FOREIGN KEY (id_tipo_transporte) REFERENCES jllb.tipo_transporte(id_tipo_transporte)
 );
@@ -629,7 +606,7 @@ CREATE TABLE jllb.paquete (
     incluye_transporte BIT DEFAULT 0,
     incluye_alimentacion BIT DEFAULT 0,
     incluye_guia BIT DEFAULT 0,
-    estado VARCHAR(20) DEFAULT 'activo' CHECK (estado IN ('Activo', 'Inactivo', 'Promocion')),
+    estado VARCHAR(20) DEFAULT 'Activo' CHECK (estado IN ('Activo', 'Inactivo', 'Promocion')),
     fecha_creacion DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (id_tipo_paquete) REFERENCES jllb.tipo_paquete(id_tipo_paquete)
 );
@@ -717,7 +694,7 @@ CREATE TABLE jllb.pago (
     fecha_pago DATETIME DEFAULT GETDATE(),
     numero_operacion VARCHAR(50),
     comprobante VARCHAR(100),
-    estado VARCHAR(15) DEFAULT 'pendiente' CHECK (estado IN ('Pendiente', 'Confirmado', 'Rechazado', 'Anulado')),
+    estado VARCHAR(15) DEFAULT 'Pendiente' CHECK (estado IN ('Pendiente', 'Confirmado', 'Rechazado', 'Anulado')),
     FOREIGN KEY (id_reserva) REFERENCES jllb.reserva (id_reserva),
     FOREIGN KEY (id_medio_pago) REFERENCES jllb.medio_pago(id_medio_pago)
 );
