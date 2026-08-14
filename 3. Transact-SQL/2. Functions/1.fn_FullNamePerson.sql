@@ -19,3 +19,7 @@ BEGIN
 	Return @nombrecompleto;
 END
 GO
+
+--Ejecutar funcion
+Select jllb.fn_NombreCompletoPersona (104)
+As Persona, getdate() as FechaConsulta;
